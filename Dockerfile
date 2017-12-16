@@ -28,8 +28,8 @@ RUN apt-get install -y dbus-x11 at-spi2-core gtk2-engines-murrine gtk2-engines-p
 # OpenGL support
 RUN apt-get install -y mesa-utils mesa-utils-extra && apt-get clean
 
-# additional utils
-RUN apt-get install -y --no-install-recommends deepin-terminal gedit sudo && apt-get clean
+# additional applications
+RUN apt-get install -y deepin-calculator deepin-image-viewer deepin-screenshot deepin-system-monitor deepin-terminal deepin-movie deepin-music gedit sudo oneko && apt-get clean
 
 # Hard way disabling bluetooth, "systemctl mask" does not work.
 # Without bluetooth hardware this service eats up the CPU and spams the log.
