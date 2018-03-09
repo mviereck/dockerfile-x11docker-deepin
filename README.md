@@ -29,4 +29,6 @@ RUN apt-get update
 RUN apt-get install -y midori
 ```
 
+# Screenshot
+
 ![screenshot](https://raw.githubusercontent.com/mviereck/x11docker/screenshots/screenshot-deepin.png "deepin desktop running in weston Xwayland window using x11docker")
