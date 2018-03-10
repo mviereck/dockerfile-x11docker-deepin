@@ -18,13 +18,14 @@ x11docker x11docker/deepin deepin-terminal
  - Shared host folder with                      `--sharedir DIR`
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
+ - Language locale setting with                 `--lang $LANG`
 
 See `x11docker --help` for further options.
 
 # Extend base image
 To add your desired applications, create your own Dockerfile with this image as a base. Example:
 ```
-FROM x11docker/xfce
+FROM x11docker/deepin
 RUN apt-get update
 RUN apt-get install -y midori
 ```
