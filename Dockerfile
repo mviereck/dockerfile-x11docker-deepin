@@ -6,33 +6,47 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run desktop with:
-#   x11docker --desktop --dbus-daemon --pulseaudio x11docker/deepin
+#   x11docker --desktop --dbus-system --pulseaudio x11docker/deepin
+# (or with systemd init:)
+#   x11docker --desktop --systemd --pulseaudio x11docker/deepin
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
 #
-# You can add hardware acceleration with option       --gpu
-# You can create a persistent home folder with option --home
-# You can share clipboard with host with option       --clipboard
-# See x11docker --help for further options.
+# Options:
+
+# Persistent home folder stored on host with   --home
+# Shared host folder with                      --sharedir DIR
+# Hardware acceleration with option            --gpu
+# Clipboard sharing with option                --clipboard
+# Sound support with option                    --alsa
+# With pulseaudio in image, sound support with --pulseaudio
+# Change desired language locale setting with  --lang $LANG
 #
+# See x11docker --help for further options.
+
 FROM deepin/deepin-core
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo "deb http://mirrors.kernel.org/deepin/ panda main non-free contrib" > /etc/apt/sources.list
-RUN apt-get update && apt-get install -y apt-utils && apt-get upgrade -y
+#RUN echo "deb http://mirrors.kernel.org/deepin/ panda main non-free contrib" > /etc/apt/sources.list
+RUN echo "deb http://ftp.fau.de/deepin/ panda main non-free contrib" > /etc/apt/sources.list
 
-# language locales
-ENV LANG en_US.UTF8
+RUN apt-get update && apt-get install -y apt-utils && apt-get dist-upgrade -y && apt-get -y autoremove && apt-get clean
+RUN apt-get install -y dbus-x11 procps psmisc
+
+# OpenGL / MESA
+RUN apt-get install -y mesa-utils mesa-utils-extra libxv1
+
+# language locales. Change LANG to your desired default locale
+ENV LANG en_US.utf8
 RUN apt-get install -y locales-all 
 
 # deepin desktop
 RUN apt-get install -y --no-install-recommends dde
 
-# missing dependencies, dconf, mesa
-RUN apt-get install -y --no-install-recommends at-spi2-core dbus-x11 dconf-cli dconf-editor \
-    gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf \
-    mesa-utils mesa-utils-extra
+# missing dependencies, dconf
+RUN apt-get install -y --no-install-recommends at-spi2-core dconf-cli dconf-editor \
+    gnome-themes-standard gtk2-engines-murrine gtk2-engines-pixbuf
 
 # additional applications
 RUN apt-get install -y deepin-calculator deepin-image-viewer deepin-screenshot \
@@ -42,7 +56,6 @@ RUN apt-get install -y deepin-calculator deepin-image-viewer deepin-screenshot \
 # chinese fonts
 RUN apt-get install -y fonts-arphic-uming
 
-ENV DEBIAN_FRONTEND newt
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/games:/usr/games
 
 # Mask units failing in container
@@ -68,7 +81,7 @@ RUN cd /usr/share/dbus-1/services && rm \
 RUN cd /usr/share/dbus-1/system-services && rm \
     org.bluez.service \
     com.deepin.lastore.service
-
+RUN ln -s /etc/sv/gdm /var/service
 # config file to use deepin-wm with 3d effects
 RUN echo '{\n\
     "last_wm": "deepin-wm"\n\
@@ -86,8 +99,11 @@ dconf write /com/deepin/dde/daemon/network false \n\
 dconf write /com/deepin/dde/daemon/bluetooth false \n\
 dconf write /com/deepin/dde/watchdog/dde-polkit-agent false \n\
 dconf write /com/deepin/dde/daemon/power false \n\
-exec startdde \n\
+exec $* \n\
 ' > /usr/bin/start 
 RUN chmod +x /usr/bin/start 
 
-CMD start
+ENTRYPOINT start
+CMD startdde
+
+ENV DEBIAN_FRONTEND newt
