@@ -6,9 +6,7 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run desktop with:
-#   x11docker --desktop --dbus-system --pulseaudio x11docker/deepin
-# (or with systemd init:)
-#   x11docker --desktop --systemd --pulseaudio x11docker/deepin
+#   x11docker --desktop --dbus-system x11docker/deepin
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
@@ -19,8 +17,6 @@
 # Shared host folder with                      --sharedir DIR
 # Hardware acceleration with option            --gpu
 # Clipboard sharing with option                --clipboard
-# Sound support with option                    --alsa
-# With pulseaudio in image, sound support with --pulseaudio
 # Change desired language locale setting with  --lang $LANG
 #
 # See x11docker --help for further options.
