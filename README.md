@@ -6,7 +6,7 @@ Run [deepin desktop](https://www.deepin.org) in docker.
 
 Run desktop with:
 ```
-x11docker --desktop --dbus-system --gpu --pulseaudio x11docker/deepin
+x11docker --desktop --dbus-system --gpu x11docker/deepin
 ```
 Run single application:
 ```
@@ -20,7 +20,7 @@ x11docker x11docker/deepin deepin-terminal
  - Clipboard sharing with option                `--clipboard`
  - Language locale setting with                 `--lang $LANG`
 
-See `x11docker --help` for further options.
+See `x11docker --help` for further options. (Sound with `--pulseaudio` or `--alsa` fails for this image, sorry).
 
 # Extend base image
 To add your desired applications, create your own Dockerfile with this image as a base. Example:
