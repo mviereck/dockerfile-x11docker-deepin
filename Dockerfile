@@ -18,6 +18,7 @@
 # Hardware acceleration with option            --gpu
 # Clipboard sharing with option                --clipboard
 # Change desired language locale setting with  --lang $LANG
+# Sound support with option                    --pulseaudio
 #
 # See x11docker --help for further options.
 
