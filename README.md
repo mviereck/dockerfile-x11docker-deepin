@@ -19,8 +19,9 @@ x11docker x11docker/deepin deepin-terminal
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
  - Language locale setting with                 `--lang $LANG`
+ - Sound support with                           `--pulseaudio`
 
-See `x11docker --help` for further options. (Sound with `--pulseaudio` or `--alsa` fails for this image, sorry).
+See `x11docker --help` for further options.
 
 # Extend base image
 To add your desired applications, create your own Dockerfile with this image as a base. Example:
