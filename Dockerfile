@@ -29,7 +29,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN echo "deb http://mirrors.kernel.org/deepin/  panda main non-free contrib" > /etc/apt/sources.list
 #RUN echo "deb http://ftp.fau.de/deepin/          panda main non-free contrib" > /etc/apt/sources.list
 
-RUN rm -rf /var/lib/apt/lists/* && apt-get update && \
+RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update && \
     apt-mark hold iptables && apt-get install -y apt-utils && \
     apt-get dist-upgrade -y && apt-get -y autoremove && apt-get clean
 RUN apt-get install -y dbus-x11 procps psmisc
