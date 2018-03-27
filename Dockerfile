@@ -22,7 +22,7 @@
 #
 # See x11docker --help for further options.
 
-FROM deepin/deepin-core
+FROM bestwu/deepin:panda
 ENV DEBIAN_FRONTEND noninteractive
 
 #RUN echo "deb http://packages.deepin.com/deepin/ panda main non-free contrib" > /etc/apt/sources.list
@@ -83,13 +83,13 @@ RUN cd /usr/share/dbus-1/system-services && rm \
     com.deepin.lastore.service
 RUN ln -s /etc/sv/gdm /var/service
 # config file to use deepin-wm with 3d effects
-RUN echo '{\n\
+RUN echo -e '{\n\
     "last_wm": "deepin-wm"\n\
 }\n\
 ' >/wm3d.json
 
 # create startscript 
-RUN echo '#! /bin/sh\n\
+RUN echo -e '#! /bin/sh\n\
 [ -e "$HOME/.config" ] || cp -R /etc/skel/. $HOME/ \n\
 [ -e /dev/dri/card0 ] && { \n\
   mkdir -p $HOME/.config/deepin/deepin-wm-switcher \n\
