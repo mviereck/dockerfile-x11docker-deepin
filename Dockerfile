@@ -90,7 +90,7 @@ RUN echo -e '{\n\
 
 # create startscript 
 RUN echo -e '#! /bin/sh\n\
-[ -e "$HOME/.config" ] || cp -R /etc/skel/. $HOME/ \n\
+[ -n "$HOME" ] && [ ! -e "$HOME/.config" ] && cp -R /etc/skel/. $HOME/ \n\
 [ -e /dev/dri/card0 ] && { \n\
   mkdir -p $HOME/.config/deepin/deepin-wm-switcher \n\
   cp -n /wm3d.json $HOME/.config/deepin/deepin-wm-switcher/config.json \n\
@@ -101,9 +101,9 @@ dconf write /com/deepin/dde/watchdog/dde-polkit-agent false \n\
 dconf write /com/deepin/dde/daemon/power false \n\
 exec $* \n\
 ' > /usr/bin/start 
-RUN chmod +x /usr/bin/start 
+RUN chmod +x /usr/bin/start
 
-ENTRYPOINT start
-CMD startdde
+ENTRYPOINT ["/usr/bin/start"]
+CMD ["startdde"]
 
 ENV DEBIAN_FRONTEND newt
