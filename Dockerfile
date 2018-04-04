@@ -6,7 +6,9 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run desktop with:
-#   x11docker --desktop --dbus-system x11docker/deepin
+#   x11docker --desktop --systemd x11docker/deepin
+# (Alternativly start with:)
+#   x11docker --desktop --dbus-system --pulseaudio x11docker/deepin
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
