@@ -6,7 +6,10 @@ Run [deepin desktop](https://www.deepin.org) in docker.
 
 Run desktop with:
 ```
-x11docker --desktop --dbus-system --gpu x11docker/deepin
+x11docker --desktop --systemd --gpu x11docker/deepin
+
+# alternativly:
+x11docker --desktop --dbus-system --pulseaudio --gpu x11docker/deepin
 ```
 Run single application:
 ```
