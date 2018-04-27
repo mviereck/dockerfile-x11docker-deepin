@@ -37,7 +37,7 @@ RUN rm -rf /var/lib/apt/lists/* && apt-get clean && apt-get update && \
 RUN apt-get install -y dbus-x11 procps psmisc
 
 # OpenGL / MESA
-RUN apt-get install -y mesa-utils mesa-utils-extra libxv1
+RUN apt-get install -y mesa-utils mesa-utils-extra libxv1 kmod
 
 # language locales. Change LANG to your desired default locale
 ENV LANG en_US.utf8
