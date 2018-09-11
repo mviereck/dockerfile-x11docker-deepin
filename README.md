@@ -23,6 +23,7 @@ x11docker x11docker/deepin deepin-terminal
  - Clipboard sharing with option                `--clipboard`
  - Language locale setting with                 `--lang $LANG`
  - Sound support with                           `--pulseaudio`
+ - Webcam support with                          `--webcam`
 
 See `x11docker --help` for further options.
 
