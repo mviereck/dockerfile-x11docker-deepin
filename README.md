@@ -1,16 +1,14 @@
 # x11docker/deepin
 
 Run [deepin desktop](https://www.deepin.org) in docker. 
- - Use x11docker to run image. 
- - Get x11docker from github: https://github.com/mviereck/x11docker 
+Use [x11docker](https://github.com/mviereck/x11docker) to run image. 
 
 Run desktop with:
 ```
-x11docker --desktop --systemd --gpu x11docker/deepin
-
-# alternativly:
-x11docker --desktop --dbus-system --pulseaudio --gpu x11docker/deepin
+x11docker --desktop --gpu --init=systemd --cap-default --hostipc -- --cap-add=SYS_RESOURCE --cap-add=IPC_LOCK -- x11docker/deepin
 ```
+Note that the setup to run deepin desktop includes several option degrading container isolation. Do not use if security is a concern.
+
 Run single application:
 ```
 x11docker x11docker/deepin deepin-terminal
@@ -18,10 +16,10 @@ x11docker x11docker/deepin deepin-terminal
 
 # Options:
  - Persistent home folder stored on host with   `--home`
- - Shared host folder with                      `--sharedir DIR`
+ - Shared host file or folder with              `--share PATH`
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
- - Language locale setting with                 `--lang $LANG`
+ - Language locale setting with                 `--lang=$LANG`
  - Sound support with                           `--pulseaudio`
  - Printer support with                         `--printer`
  - Webcam support with                          `--webcam`
@@ -33,7 +31,7 @@ To add your desired applications, create your own Dockerfile with this image as 
 ```
 FROM x11docker/deepin
 RUN apt-get update
-RUN apt-get install -y midori
+RUN apt-get install -y firefox
 ```
  
 # Screenshot
