@@ -1,13 +1,13 @@
 # x11docker/deepin
 
-Run [deepin desktop](https://www.deepin.org) in docker. 
+Run [deepin desktop](https://www.deepin.org) in a Docker container. 
 Use [x11docker](https://github.com/mviereck/x11docker) to run image. 
 
 Run desktop with:
 ```
 x11docker --desktop --gpu --init=systemd --cap-default --hostipc -- --cap-add=SYS_RESOURCE --cap-add=IPC_LOCK -- x11docker/deepin
 ```
-Note that the setup to run deepin desktop includes several option degrading container isolation. Do not use if security is a concern.
+Note that the setup to run deepin desktop includes several options degrading container isolation. Do not use if security is a concern.
 
 Run single application:
 ```
@@ -19,7 +19,7 @@ x11docker x11docker/deepin deepin-terminal
  - Shared host file or folder with              `--share PATH`
  - Hardware acceleration with option            `--gpu`
  - Clipboard sharing with option                `--clipboard`
- - Language locale setting with                 `--lang=$LANG`
+ - Language locale setting with                 `--lang [=$LANG]`
  - Sound support with                           `--pulseaudio`
  - Printer support with                         `--printer`
  - Webcam support with                          `--webcam`

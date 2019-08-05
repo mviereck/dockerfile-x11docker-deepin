@@ -1,13 +1,12 @@
 # x11docker/deepin
 # 
-# Run deepin desktop in docker. 
-# Use x11docker to run image. 
-# Get x11docker from github: 
+# Run deepin desktop in a Docker container. 
+# Use x11docker to run image: 
 #   https://github.com/mviereck/x11docker 
 #
 # Run deepin desktop with:
 #   x11docker --desktop --gpu --init=systemd --cap-default --hostipc -- --cap-add=SYS_RESOURCE --cap-add=IPC_LOCK -- x11docker/deepin
-# Note that the setup to run deepin desktop includes several option degrading container isolation. Do not use if security is a concern.
+# Note that the setup to run deepin desktop includes several options degrading container isolation. Do not use if security is a concern.
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
@@ -15,11 +14,13 @@
 # Options:
 
 # Persistent home folder stored on host with   --home
-# Shared host folder with                      --sharedir DIR
+# Share host file or folder with option        --share PATH
 # Hardware acceleration with option            --gpu
 # Clipboard sharing with option                --clipboard
-# Change desired language locale setting with  --lang $LANG
+# Language locale setting with option          --lang [=$LANG]
 # Sound support with option                    --pulseaudio
+# Printer support with option                  --printer
+# Webcam support with option                   --webcam
 #
 # See x11docker --help for further options.
 
@@ -31,7 +32,7 @@ ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local
 # choose a mirror
 #RUN echo "deb http://packages.deepin.com/deepin/ panda main non-free contrib" > /etc/apt/sources.list
 RUN echo "deb http://mirrors.kernel.org/deepin/  panda main non-free contrib" > /etc/apt/sources.list
-#RUN echo "deb http://ftp.fau.de/deepin/  panda main non-free contrib" > /etc/apt/sources.list
+#RUN echo "deb http://ftp.fau.de/deepin/          panda main non-free contrib" > /etc/apt/sources.list
 
 # basics
 RUN rm -rf /var/lib/apt/lists/* && \
@@ -54,8 +55,6 @@ env DEBIAN_FRONTEND=noninteractive apt-get install -y \
 RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     dde \
     at-spi2-core \
-    dconf-cli \
-    dconf-editor \
     gnome-themes-standard \
     gtk2-engines-murrine \
     gtk2-engines-pixbuf \
