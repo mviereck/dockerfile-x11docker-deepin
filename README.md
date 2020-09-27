@@ -5,7 +5,7 @@ Use [x11docker](https://github.com/mviereck/x11docker) to run image.
 
 Run desktop with:
 ```
-x11docker --desktop --gpu --init=systemd --cap-default --hostipc -- --cap-add=SYS_RESOURCE --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
+x11docker --desktop --gpu --init=systemd -- --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
 ```
 Note that the setup to run deepin desktop includes several options degrading container isolation. Do not use if security is a concern.
 
