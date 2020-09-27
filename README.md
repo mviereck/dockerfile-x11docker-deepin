@@ -7,7 +7,6 @@ Run desktop with:
 ```
 x11docker --desktop --gpu --init=systemd -- --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
 ```
-Note that the setup to run deepin desktop includes several options degrading container isolation. Do not use if security is a concern.
 
 Run single application:
 ```
