@@ -24,15 +24,15 @@
 #
 # See x11docker --help for further options.
 
-FROM bestwu/deepin:panda
+FROM bestwu/deepin:lion
 
 ENV LANG en_US.utf8
 ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/games:/usr/games
 
 # choose a mirror
-#RUN echo "deb http://packages.deepin.com/deepin/ panda main non-free contrib" > /etc/apt/sources.list
-RUN echo "deb http://mirrors.kernel.org/deepin/  panda main non-free contrib" > /etc/apt/sources.list
-#RUN echo "deb http://ftp.fau.de/deepin/          panda main non-free contrib" > /etc/apt/sources.list
+#RUN echo "deb http://packages.deepin.com/deepin/ lion main non-free contrib" > /etc/apt/sources.list
+RUN echo "deb http://mirrors.kernel.org/deepin/  lion main non-free contrib" > /etc/apt/sources.list
+#RUN echo "deb http://ftp.fau.de/deepin/          lion main non-free contrib" > /etc/apt/sources.list
 
 # basics
 RUN rm -rf /var/lib/apt/lists/* && \
