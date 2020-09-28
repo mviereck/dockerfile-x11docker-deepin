@@ -30,7 +30,16 @@ To add your desired applications, create your own Dockerfile with this image as 
 ```
 FROM x11docker/deepin
 RUN apt-get update
-RUN apt-get install -y firefox
+RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y firefox
+```
+Example to add `wine` and `wechat`:
+```
+FROM x11docker/deepin
+RUN env DEBIAN_FRONTEND=noninteractive dpkg --add-architecture i386 && apt-get update
+RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    deepin-wine deepin-wine32 deepin-wine32-preloader deepin-wine-helper deepin-wine-uninstaller
+RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    deepin.com.wechat
 ```
  
 # Screenshot
