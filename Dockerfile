@@ -92,6 +92,7 @@ RUN apt-get update && \
         mesa-utils-extra \
         procps \
         psmisc \
+        xdg-utils \
         x11-xkb-utils && \
     /cleanup
 

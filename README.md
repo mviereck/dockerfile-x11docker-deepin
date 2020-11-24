@@ -46,10 +46,7 @@ To replace the deepin repository with the community repository, build a new imag
 ```
 FROM x11docker/deepin
 
-RUN apt-get update && \
-    env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        ca-certificates && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1C30362C0A53D5BB && \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1C30362C0A53D5BB && \
     echo "deb [by-hash=force] https://community-packages.deepin.com/deepin/ apricot main contrib non-free"  > /etc/apt/sources.list && \
     echo "deb https://community-store-packages.deepin.com/appstore eagle appstore" > /etc/apt/sources.list.d/appstore.list && \
     apt-get update
