@@ -5,13 +5,12 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run deepin desktop with:
-#   x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
+#   x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK -- x11docker/deepin
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
 #
 # Options:
-
 # Persistent home folder stored on host with   --home
 # Share host file or folder with option        --share PATH
 # Hardware acceleration with option            --gpu
@@ -23,57 +22,118 @@
 #
 # See x11docker --help for further options.
 
-FROM bestwu/deepin:lion
+#### stage 0: debian, debootstrap ####
+FROM debian:buster
 
-ENV LANG en_US.utf8
-ENV PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/games:/usr/games
+# Choose a deepin mirror close to your location.
+# Many further mirrors are listed at: https://www.deepin.org/en/mirrors/packages/
+#ENV DEEPIN_MIRROR=http://packages.deepin.com/deepin/
+#ENV DEEPIN_MIRROR=http://mirrors.ustc.edu.cn/deepin/
+ENV DEEPIN_MIRROR=http://mirrors.kernel.org/deepin/
+#ENV DEEPIN_MIRROR=http://ftp.fau.de/deepin/
 
-# choose a mirror
-#RUN echo "deb http://packages.deepin.com/deepin/ lion main non-free contrib" > /etc/apt/sources.list
-RUN echo "deb http://mirrors.kernel.org/deepin/  lion main non-free contrib" > /etc/apt/sources.list
-#RUN echo "deb http://ftp.fau.de/deepin/          lion main non-free contrib" > /etc/apt/sources.list
+ENV DEEPIN_RELEASE=apricot
+
+# prepare sources and keys
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        debootstrap \
+        gnupg && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51 && \
+    mkdir -p /rootfs/etc/apt && \
+    cp /etc/apt/trusted.gpg /rootfs/etc/apt/trusted.gpg && \
+    echo "deb $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" > /rootfs/etc/apt/sources.list
+
+# cleanup script for use after apt-get
+RUN echo '#! /bin/sh\n\
+env DEBIAN_FRONTEND=noninteractive apt-get autoremove -y\n\
+apt-get clean\n\
+find /var/lib/apt/lists -type f -delete\n\
+find /var/cache -type f -delete\n\
+find /var/log -type f -delete\n\
+exit 0\n\
+' > /rootfs/cleanup && chmod +x /rootfs/cleanup
+
+# debootstrap script
+RUN mkdir -p /usr/share/debootstrap/scripts && \
+    echo "mirror_style release\n\
+download_style apt\n\
+finddebs_style from-indices\n\
+variants - buildd fakechroot minbase\n\
+keyring /usr/share/keyrings/deepin-archive-camel-keyring.gpg\n\
+. /usr/share/debootstrap/scripts/debian-common \n\
+" > /usr/share/debootstrap/scripts/$DEEPIN_RELEASE
+
+RUN debootstrap --variant=minbase --arch=amd64 $DEEPIN_RELEASE /rootfs $DEEPIN_MIRROR && \
+    chroot ./rootfs apt-get update && \
+    chroot ./rootfs env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y && \
+    chroot ./rootfs /cleanup
+
+#### stage 1: deepin ####
+FROM scratch
+COPY --from=0 /rootfs /
+
+ENV SHELL=/bin/bash
+ENV LANG=en_US.UTF-8
 
 # basics
-RUN rm -rf /var/lib/apt/lists/* && \
-    apt-get clean && \
-    apt-get update && \
-    apt-mark hold iptables && \
-    apt-get dist-upgrade -y && \
-    apt-get -y autoremove && \
-    apt-get clean && \
-env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    dbus-x11 \
-    libxv1 \
-    locales-all \
-    mesa-utils \
-    mesa-utils-extra \
-    procps \
-    psmisc
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        apt-transport-https \
+        ca-certificates \
+        dbus-x11 \
+        deepin-keyring \
+        gnupg \
+        libcups2 \
+        libpulse0 \
+        libxv1 \
+        locales-all \
+        mesa-utils \
+        mesa-utils-extra \
+        procps \
+        psmisc \
+        x11-xkb-utils && \
+    /cleanup
 
 # deepin desktop
-RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    dde \
-    at-spi2-core \
-    gnome-themes-standard \
-    gtk2-engines-murrine \
-    gtk2-engines-pixbuf \
-    pciutils
+
+# Dependencies taken from 'apt show dde'
+# (excluded: dde-session-ui deepin-manual eject plymouth-theme-deepin-logo dde-printer deepin-screensaver)
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        dde-control-center \
+        dde-clipboard \
+        dde-desktop \
+        dde-dock \
+        dde-file-manager \
+        dde-kwin \
+        dde-launcher \
+        dde-qt5integration \
+        deepin-artwork \
+        deepin-default-settings \
+        deepin-desktop-base \
+        deepin-wallpapers \
+        fonts-noto \
+        startdde && \
+    /cleanup
 
 # additional applications
-RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    deepin-calculator \
-    deepin-image-viewer \
-    deepin-screenshot \
-    deepin-system-monitor \
-    deepin-terminal \
-    deepin-movie \
-    gedit \
-    oneko \
-    sudo \
-    synaptic
-
-# chinese fonts
-RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    fonts-arphic-uming
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        dde-calendar \
+        deepin-album \
+        deepin-calculator \
+        deepin-draw \
+        deepin-editor \
+        deepin-image-viewer \
+        deepin-movie \
+        deepin-music \
+        deepin-screenshot \
+        deepin-system-monitor \
+        deepin-terminal \
+        deepin-voice-note \
+        oneko \
+        sudo && \
+    /cleanup
 
 CMD ["startdde"]
