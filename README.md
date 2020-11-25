@@ -29,7 +29,7 @@ See `x11docker --help` for further options.
  - With x11docker default X server option `--xephyr` the desktop window size is too large, deepin does some odd resizing. Try `--nxagent`, `--xpra` or `--weston-xwayland` instead.
    These options allow to resize the window.
  - The logout button does not respond. To terminate the session either close the X server window or type `systemctl poweroff`.
- - Configuring the Chinese input method with `fcitx` does not work.
+ - Configuring the keyboard input method in deepin control center does not work. Use "Fcitx Configuration" in the application menu instead.
 
 # Extend base image
 To add your desired applications, create and build from a custom Dockerfile with this image as a base. Example with `firefox`:
