@@ -32,11 +32,12 @@ See `x11docker --help` for further options.
  - Configuring the Chinese input method with `fcitx` does not work.
 
 # Extend base image
-To add your desired applications, create your own Dockerfile with this image as a base. Example:
+To add your desired applications, create and build from a custom Dockerfile with this image as a base. Example with `firefox`:
 ```
 FROM x11docker/deepin
-RUN apt-get update
-RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y firefox && apt-get clean
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y firefox && \
+    apt-get clean
 ```
 
 ## deepin community repository
@@ -57,7 +58,10 @@ To install e.g. WeChat add this line:
 ```
 RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y com.qq.weixin.deepin && apt-get clean
 ```
-WeChat can be started with: `/opt/apps/com.qq.weixin.deepin/files/run.sh`
+WeChat can be started in container with: `/opt/apps/com.qq.weixin.deepin/files/run.sh`. To let it appear in the application menu, add:
+```
+RUN cp /opt/apps/com.qq.weixin.deepin/entries/applications/com.qq.weixin.deepin.desktop /usr/share/applications/
+```
 
 # Screenshot
 
