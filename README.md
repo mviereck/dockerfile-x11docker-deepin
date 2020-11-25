@@ -54,6 +54,11 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1C30362C0A53D5BB &&
 ```
 Another community repository outside of China is [located in Spain](https://deepinenespañol.org/en/improve-the-speed-of-the-deepin-20-beta-repository/).
 
+Many deepin wine applications need `i386` architecture support. Add this with:
+```
+RUN dpkg --add-architecture i386 && apt-get update
+```
+
 To install e.g. WeChat add this line:
 ```
 RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y com.qq.weixin.deepin && apt-get clean
