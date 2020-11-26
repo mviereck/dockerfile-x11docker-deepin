@@ -42,7 +42,8 @@ RUN apt-get update && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51 && \
     mkdir -p /rootfs/etc/apt && \
     cp /etc/apt/trusted.gpg /rootfs/etc/apt/trusted.gpg && \
-    echo "deb $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" > /rootfs/etc/apt/sources.list
+    echo "deb     $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" > /rootfs/etc/apt/sources.list && \
+    echo "deb-src $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" >> /rootfs/etc/apt/sources.list
 
 # cleanup script for use after apt-get
 RUN echo '#! /bin/sh\n\
@@ -97,8 +98,27 @@ RUN apt-get update && \
         x11-xserver-utils && \
     /cleanup
 
-# deepin desktop
+# Replace closed source package deepin-user-experience-daemon (spyware?) with an empty fake package.
+# https://github.com/mviereck/dockerfile-x11docker-deepin/issues/33
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        equivs && \
+    echo "Section: misc\n\
+Priority: optional\n\
+Standards-Version: 3.9.2\n\
+Package: deepin-user-experience-daemon\n\
+Version: 99.0\n\
+Provides: deepin-user-experience-daemon\n\
+" > deepin-user-experience-daemon && \
+    equivs-build deepin-user-experience-daemon && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        ./deepin-user-experience-daemon_99.0_all.deb && \
+    apt-get remove -y \
+        equivs && \
+    rm deepin-user-experience* && \
+    /cleanup
 
+# deepin desktop
 # Dependencies taken from 'apt show dde'
 # (excluded: dde-session-ui deepin-manual eject plymouth-theme-deepin-logo dde-printer deepin-screensaver)
 RUN apt-get update && \
