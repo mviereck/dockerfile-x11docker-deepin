@@ -93,7 +93,8 @@ RUN apt-get update && \
         procps \
         psmisc \
         xdg-utils \
-        x11-xkb-utils && \
+        x11-xkb-utils \
+        x11-xserver-utils && \
     /cleanup
 
 # deepin desktop
@@ -142,7 +143,7 @@ ENV XMODIFIERS=@im=fcitx QT4_IM_MODULE=fcitx QT_IM_MODULE=fcitx GTK_IM_MODULE=fc
 RUN apt-get update && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
         fcitx-sunpinyin fcitx-ui-classic && \
-    mkdir -p /etc/skel/.config/autostart && \
+    mkdir -p /etc/xdg/autostart && \
     echo "[Desktop Entry]\n\
 Encoding=UTF-8\n\
 Version=0.9.4\n\
@@ -153,7 +154,7 @@ Exec=fcitx\n\
 StartupNotify=false\n\
 Terminal=false\n\
 Hidden=true\n\
-" > /etc/skel/.config/autostart/fcitx.desktop && \
+" > /etc/xdg/autostart/fcitx.desktop && \
     /cleanup
 
 CMD ["startdde"]
