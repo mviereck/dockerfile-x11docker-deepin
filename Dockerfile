@@ -142,7 +142,7 @@ RUN apt-get update && \
 ENV XMODIFIERS=@im=fcitx QT4_IM_MODULE=fcitx QT_IM_MODULE=fcitx GTK_IM_MODULE=fcitx
 RUN apt-get update && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        fcitx-sunpinyin fcitx-ui-classic && \
+        fcitx-sunpinyin && \
     mkdir -p /etc/xdg/autostart && \
     echo "[Desktop Entry]\n\
 Encoding=UTF-8\n\
@@ -150,10 +150,7 @@ Version=0.9.4\n\
 Type=Application\n\
 Name=fcitx\n\
 Comment=\n\
-Exec=fcitx\n\
-StartupNotify=false\n\
-Terminal=false\n\
-Hidden=true\n\
+Exec=/usr/bin/fcitx-autostart\n\
 " > /etc/xdg/autostart/fcitx.desktop && \
     /cleanup
 
