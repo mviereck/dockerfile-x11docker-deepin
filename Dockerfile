@@ -61,7 +61,6 @@ RUN mkdir -p /usr/share/debootstrap/scripts && \
 download_style apt\n\
 finddebs_style from-indices\n\
 variants - buildd fakechroot minbase\n\
-keyring /usr/share/keyrings/deepin-archive-camel-keyring.gpg\n\
 . /usr/share/debootstrap/scripts/debian-common \n\
 " > /usr/share/debootstrap/scripts/$DEEPIN_RELEASE
 
@@ -91,6 +90,7 @@ RUN apt-get update && \
         locales-all \
         mesa-utils \
         mesa-utils-extra \
+        nano \
         procps \
         psmisc \
         xdg-utils \
@@ -173,5 +173,8 @@ Comment=\n\
 Exec=/usr/bin/fcitx-autostart\n\
 " > /etc/xdg/autostart/fcitx.desktop && \
     /cleanup
+    
+RUN apt-get update && \
+    find /var/lib/apt/lists -type f -delete
 
 CMD ["startdde"]

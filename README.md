@@ -40,31 +40,9 @@ RUN apt-get update && \
 
 ## deepin community repository
 Some applications has been outsourced from the official deepin repository, noteable many Windows applications running with wine.
-They are still available in a [community repository](https://www.deepin.org/en/2020/11/19/statements/).
-To replace the deepin repository with the community repository, build a new image with:
-```
-FROM x11docker/deepin
-
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1C30362C0A53D5BB && \
-    echo "deb [by-hash=force] https://community-packages.deepin.com/deepin/ apricot main contrib non-free"  > /etc/apt/sources.list && \
-    echo "deb https://community-store-packages.deepin.com/appstore eagle appstore" > /etc/apt/sources.list.d/appstore.list && \
-    apt-get update
-```
-Another community repository outside of China is [located in Spain](https://deepinenespañol.org/en/improve-the-speed-of-the-deepin-20-beta-repository/).
-
-Many deepin wine applications need `i386` architecture support. Add this with:
-```
-RUN dpkg --add-architecture i386 && apt-get update
-```
-
-To install e.g. WeChat add this line:
-```
-RUN env DEBIAN_FRONTEND=noninteractive apt-get install -y com.qq.weixin.deepin && apt-get clean
-```
-WeChat can be started in container with: `/opt/apps/com.qq.weixin.deepin/files/run.sh`. To let it appear in the application menu, add:
-```
-RUN cp /opt/apps/com.qq.weixin.deepin/entries/applications/com.qq.weixin.deepin.desktop /usr/share/applications/
-```
+They should be still available in a [community repository](https://www.deepin.org/en/2020/11/19/statements/).
+However, the official site is no longer accessible for unknown reasons.
+An inofficial community repository outside of China is [located in Spain](https://deepinenespañol.org/en/improve-the-speed-of-the-deepin-20-beta-repository/).
 
 # Screenshot
 
