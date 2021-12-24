@@ -5,7 +5,7 @@
 #   https://github.com/mviereck/x11docker 
 #
 # Run deepin desktop with:
-#   x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK -- x11docker/deepin
+#   x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
 #
 # Run single application:
 #   x11docker x11docker/deepin deepin-terminal
