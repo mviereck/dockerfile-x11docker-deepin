@@ -5,7 +5,7 @@ Use [x11docker](https://github.com/mviereck/x11docker) to run image.
 
 Run desktop with:
 ```
-x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK --security-opt seccomp=unconfined -- x11docker/deepin
+x11docker --desktop --init=systemd -- --cap-add=IPC_LOCK -- x11docker/deepin
 ```
 
 Run single application:
