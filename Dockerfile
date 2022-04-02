@@ -118,6 +118,13 @@ Provides: deepin-user-experience-daemon\n\
     rm deepin-user-experience* && \
     /cleanup
 
+# workaround to fix udisks2 installation error, taken from https://github.com/CypherpunkArmory/UserLAnd/issues/1072#issuecomment-548223639
+RUN apt-get update && \
+    env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        udisks2 || rm -v /var/lib/dpkg/info/udisks2.postinst && \
+    dpkg --configure udisks2 && \
+    /cleanup
+
 # deepin desktop
 # Dependencies taken from 'apt show dde'
 # (excluded: dde-session-ui deepin-manual eject plymouth-theme-deepin-logo dde-printer deepin-screensaver)
