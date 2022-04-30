@@ -38,6 +38,7 @@ ENV DEEPIN_RELEASE=apricot
 RUN apt-get update && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
         debootstrap \
+        apt-utils \
         gnupg && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51 && \
     mkdir -p /rootfs/etc/apt && \
