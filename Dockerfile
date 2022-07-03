@@ -37,8 +37,7 @@ ENV DEEPIN_RELEASE=apricot
 # prepare sources and keys
 RUN apt-get update && \
     env DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        debootstrap \
-        apt-utils \
+        multistrap \
         gnupg && \
     apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 425956BB3E31DF51 && \
     mkdir -p /rootfs/etc/apt && \
@@ -56,19 +55,34 @@ find /var/log -type f -delete\n\
 exit 0\n\
 ' > /rootfs/cleanup && chmod +x /rootfs/cleanup
 
-# debootstrap script
-RUN mkdir -p /usr/share/debootstrap/scripts && \
-    echo "mirror_style release\n\
-download_style apt\n\
-finddebs_style from-indices\n\
-variants - buildd fakechroot minbase\n\
-. /usr/share/debootstrap/scripts/debian-common \n\
-" > /usr/share/debootstrap/scripts/$DEEPIN_RELEASE
+# multistrap recipe for deepin
+RUN echo "[General]\n\
+arch=amd64\n\
+directory=/rootfs/\n\
+cleanup=true\n\
+noauth=false\n\
+unpack=true\n\
+explicitsuite=false\n\
+multiarch=\n\
+aptsources=Debian\n\
+bootstrap=Deepin\n\
+[Deepin]\n\
+packages=apt\n\
+source=$DEEPIN_MIRROR\n\
+keyring=debian-archive-keyring\n\
+suite=$DEEPIN_RELEASE\n\
+" >/deepin.multistrap
 
-RUN debootstrap --variant=minbase --arch=amd64 $DEEPIN_RELEASE /rootfs $DEEPIN_MIRROR && \
-    chroot ./rootfs apt-get update && \
+RUN multistrap -f /deepin.multistrap
+
+RUN mkdir -p /rootfs/etc/apt && \
+    cp /etc/apt/trusted.gpg /rootfs/etc/apt/trusted.gpg && \
+    echo "deb     $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" > /rootfs/etc/apt/sources.list && \
+    echo "deb-src $DEEPIN_MIRROR $DEEPIN_RELEASE main non-free contrib" >> /rootfs/etc/apt/sources.list
+
+RUN chroot ./rootfs /usr/bin/apt-get update && \
     chroot ./rootfs env DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y && \
-    chroot ./rootfs /cleanup
+    chroot ./rootfs /cleanup 
 
 #### stage 1: deepin ####
 FROM scratch
@@ -165,7 +179,7 @@ RUN apt-get update && \
         oneko \
         sudo && \
     /cleanup
-    
+
 # fcitx: Chinese input support
 ENV XMODIFIERS=@im=fcitx QT4_IM_MODULE=fcitx QT_IM_MODULE=fcitx GTK_IM_MODULE=fcitx
 RUN apt-get update && \
@@ -181,8 +195,5 @@ Comment=\n\
 Exec=/usr/bin/fcitx-autostart\n\
 " > /etc/xdg/autostart/fcitx.desktop && \
     /cleanup
-    
-RUN apt-get update && \
-    find /var/lib/apt/lists -type f -delete
 
 CMD ["startdde"]
